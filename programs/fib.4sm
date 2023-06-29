@@ -1,22 +1,28 @@
+$loop_index   0000
+$x            0001
+$y            0002
+$output_start 0003
+$output_end   0010
+
 init:
     ; declare memcache addresses as first 16 bytes of ram
-    mca 0 0000 ; holds the loop index
-    mca 1 0001 ; stores fib[n-1]
-    mca 2 0002 ; stores fib[n-2]
+    mca 0 $loop_index ; holds the loop index
+    mca 1 $x ; stores fib[n-1]
+    mca 2 $y ; stores fib[n-2]
 
-    mca 3 0003 ; output of the program starts here
-    mca 4 0004
-    mca 5 0005
-    mca 6 0006
-    mca 7 0007
-    mca 8 0008
-    mca 9 0009
-    mca A 000A
-    mca B 000B
-    mca C 000C
-    mca D 000D
-    mca E 000E
-    mca F 000F
+    mca 3 $output_start ; output of the program starts here
+    mca 4 $output_start+1
+    mca 5 $output_start+2
+    mca 6 $output_start+3
+    mca 7 $output_start+4
+    mca 8 $output_start+5
+    mca 9 $output_start+6
+    mca A $output_start+7
+    mca B $output_start+8
+    mca C $output_start+9
+    mca D $output_start+A
+    mca E $output_start+B
+    mca F $output_start+C
 
     ; first 2 numbers in the sequence are 1 and 1
     ulia 1
@@ -57,7 +63,7 @@ loop:
     jcu loop ; if not, repeat the loop
 
 exit:
-    mca F 0010 ; mark a result in ram to show we got here successfully
+    mca F $output_end ; mark a result in ram to show we got here successfully
     ulia F
     lib F
     st

@@ -23,6 +23,42 @@ def strip_comments(lines):
             new_lines.append(line)
     return new_lines
 
+
+# TODO: support multiple constants in a single line e.g. adding constants together
+def replace_constants(lines):
+    def get_constants(lines):
+        constants = {}
+        new_lines = []
+        for line in lines:
+            if line[0] == "$":
+                parts = line.split(" ")
+                constants[parts[0]] = int(parts[-1], 16)
+            else:
+                new_lines.append(line)
+        return constants, new_lines
+    
+    constants, lines = get_constants(lines)
+    new_lines = []
+    for line in lines:
+        new_line = line
+        for name, value in constants.items():
+            if name in line:
+                if "+" in line:
+                    value += int(line.split('+')[-1], 16)
+                    new_line = line.split('+')[0]
+                elif "-" in line:
+                    value -= int(line.split('-')[-1], 16)
+                    new_line = line.split('-')[0]
+
+                new_line = new_line.replace(name, my_hex(value))
+        new_lines.append(new_line)
+    return new_lines
+
+# TODO: support aliasing (mostly to simulate var names for memory cache address)
+# e.g. .x 1 ... lda .x -> lda 1
+def replace_aliases(lines):
+    return lines            
+
 # Some optimizations are easier with composite functions still un-expanded
 # e.g. replacing safe composite functions with unsafe versions when B will be loaded anyway
 def optimize_1(lines):
@@ -158,7 +194,6 @@ def expand_large_ops(lines):
         parts = line.split(" ")
         if parts[0] == "jcu":
             new_lines.append(line)
-            # l2, l3 = ptr_to_2_nybs(int(parts[1], 16))
             new_lines.append("?")
             new_lines.append("?")
         elif parts[0] == "mca":
@@ -283,6 +318,7 @@ def my_hex(n):
 
 
 code = strip_comments(code)
+code = replace_constants(code)
 code = optimize_1(code)
 # maximum computed nesting is 3 (sub -> neg -> addi -> add), run expand 3 times
 code = expand_computed(code)

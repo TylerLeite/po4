@@ -53,7 +53,7 @@ func runInstruction(instr opName, arg1 nyb, arg2 ptr) {
 	case opMemoryCacheAdd:
 		mca(arg1, ptr(arg2))
 	case opLoadCacheOffset:
-		mri(arg2)
+		mri()
 	case opSwapRegisters:
 		swr(arg1)
 	}

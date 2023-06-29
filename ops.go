@@ -63,19 +63,19 @@ func lib(n nyb) {
 }
 
 func ld() {
-	(&a).set(ram[cache[nyb2byte[b]]+cacheOffset])
+	(&a).set(ram[cache[nyb2byte[b]]])
 }
 
 func ldb(ref nyb) {
-	(&b).set(ram[cache[nyb2byte[ref]]+cacheOffset])
+	(&b).set(ram[cache[nyb2byte[ref]]])
 }
 
 func st() {
-	(&ram[cache[nyb2byte[b]]+cacheOffset]).set(a)
+	(&ram[cache[nyb2byte[b]]]).set(a)
 }
 
 func sta(ref nyb) {
-	(&ram[cache[nyb2byte[ref]]+cacheOffset]).set(a)
+	(&ram[cache[nyb2byte[ref]]]).set(a)
 }
 
 func swr(n nyb) {
@@ -118,6 +118,9 @@ func mca(index nyb, addr ptr) {
 	cache[nyb2byte[index]] = addr
 }
 
-func mri(offset ptr) {
-	cacheOffset = offset
+func mri() {
+	offset := 8 - int(nyb2byte[b])
+	for i, addr := range cache {
+		cache[i] = ptr(int(addr) - offset)
+	}
 }

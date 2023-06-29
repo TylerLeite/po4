@@ -15,7 +15,7 @@ swr(n)    // n[:2], n[2:] = n[2:], n[:2]
 lc()      // carry = b
 
 mca(index, addr) // set the cache at index to point to addr in ram
-mri(offset)      // set the address offset applied to cache accesses
+mri()            // increment where each cache entry points to by (B-7)
 
 // Composite operations
 sub()     // A = A - B

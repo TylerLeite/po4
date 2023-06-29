@@ -9,7 +9,8 @@
     - Might end up incrementing after every instruction and jumping to the spot before you want to land, depending on hardware implementation
 * 16x16-bit memory cache
     - RAM and ROM are both more than 16-bits long, so you need addresses that don't fit in a register to index into them. The solution is to store longer addresses in a cache that is accessed by a 4-bit pointer-pointer.
-    - A cache offset is also supported so you can index into structured data without having to modify the entire memory cache. Right now the cache offset is 16-bit. Might lower it to 4-bit if that seems good enough
+    - A cache offset is also supported so you can index into structured data without having to load a new value for the entire memory cache
+        - This also allows you to scan an 8-address window through ram 
     - Loading new addresses into the memory cache takes 3 cycles per value
     - Loading a new cache offset takes 3 cycles
 * 2048x4-bit RAM

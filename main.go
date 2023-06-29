@@ -10,9 +10,8 @@ import (
 var (
 	ram [2048]nyb
 	// vram        [2048]nyb
-	rom         [49152]instr
-	cache       [16]ptr
-	cacheOffset ptr
+	rom   [49152]instr
+	cache [16]ptr
 
 	// Registers
 	a  nyb
@@ -63,6 +62,6 @@ func main() {
 	printRegs()
 	printCache()
 	printRam(0, 32)
-	fmt.Printf("PC: %d\nCarry: %v\nCache offset: %d\n", pc, carry, cacheOffset)
+	fmt.Printf("PC: %d\nCarry: %v\n", pc, carry)
 
 }
