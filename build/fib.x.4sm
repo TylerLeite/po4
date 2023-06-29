@@ -1,0 +1,56 @@
+init:
+mca 0 0000 
+mca 1 0001 
+mca 2 0002 
+mca 3 0003 
+mca 4 0004
+mca 5 0005
+mca 6 0006
+mca 7 0007
+mca 8 0008
+mca 9 0009
+mca A 000A
+mca B 000B
+mca C 000C
+mca D 000D
+mca E 000E
+mca F 000F
+lib 1
+swr 1
+lib 2 
+st
+lib 3 
+st
+swr 1
+lib 0
+st
+loop:
+ldb 1
+swr 1
+ldb 2
+add   
+lib 0
+lc
+ldb 1 
+sta 1 
+swr 1
+sta 2
+ldb 0
+swr 1
+lib 1
+add
+sta 0  
+ldb 1
+swr 1
+st
+ldb 0
+swr 1
+lib 1
+add
+jcu loop 
+exit:
+mca F 0010 
+lib F
+swr 1
+lib F
+st

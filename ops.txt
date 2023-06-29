@@ -1,0 +1,49 @@
+// Atomic functions
+add()     // A = A + B
+ror()     // bit-rotate A right
+rol()     // bit-rotate A left
+jcu(line) // jump to line if the carry bit is unset
+and()     // A = A & B
+or()      // A + A | B
+xor()     // A + A ^ B
+lib(n)    // B = n
+ld()      // A = *B
+ldb(ref)  // B = *ref
+st()      // *B = A
+sta(ref)  // *ref = A
+swr(n)    // n[:2], n[2:] = n[2:], n[:2]
+lc()      // carry = b
+
+mca(index, addr) // set the cache at index to point to addr in ram
+mri(offset)      // set the address offset applied to cache accesses
+
+// Composite functions
+sub()     // A = A - B
+addi(n)   // A = A + n
+subi(n)   // A = A - n
+neg()     // A = -A
+rsh()     // A = A >> 1
+lsh()     // A = A << 1
+not()     // A = !A
+andi(n)   // A = A & n
+ori(n)    // A = A | n
+xori(n)   // A = A ^ n
+lia(n)    // A = n
+lda(ref)  // A = *ref
+ulia(n)   // A = n
+ulda(ref) // A = *ref
+clr()     // A = 0, B = 0
+clc()     // unset the carry bit
+stc()     // set the carry bit
+swp()     // A = B, B = A 
+swa()     // A = T, T = A 
+swb()     // B = T, T = B 
+
+// Unimplemented functions
+mul()   // A = A * B
+div()   // A = A / B
+mod()   // A = A % B
+muli(n) // A = A * n
+divi(n) // A = A / n
+modi(n) // A = A % n
+sti(n)  // *B = n

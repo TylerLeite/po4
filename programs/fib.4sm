@@ -1,0 +1,63 @@
+init:
+    ; declare memcache addresses as first 16 bytes of ram
+    mca 0 0000 ; holds the loop index
+    mca 1 0001 ; stores fib[n-1]
+    mca 2 0002 ; stores fib[n-2]
+
+    mca 3 0003 ; output of the program starts here
+    mca 4 0004
+    mca 5 0005
+    mca 6 0006
+    mca 7 0007
+    mca 8 0008
+    mca 9 0009
+    mca A 000A
+    mca B 000B
+    mca C 000C
+    mca D 000D
+    mca E 000E
+    mca F 000F
+
+    ; first 2 numbers in the sequence are 1 and 1
+    ulia 1
+
+    lib 2 ; store 1 @ cache address 2
+    st
+    lib 3 ; store 1 @ cache address 3
+    st
+
+    swp ; loop index is the memory cache address last used (3 in this case)
+    lib 0
+    st
+
+    ; now ram looks like [0, 1, 1, ...]
+    ; a=3, b=0
+
+loop:
+    ; first get args from ram
+    ldb 1
+    swp
+    ldb 2
+
+    add   ; calculate next fib # in $a
+    clc   ; need to clear the carry manually
+    ldb 1 ; save fib [n-1], going to move it to ram[2]
+    sta 1 ; store sum in ram[1]
+    swp   ; store fib[n-1] in ram[2] (as advertised)
+    sta 2
+
+    ulda 0 ; get index
+    addi 1 ; increment it
+    sta 0  ; store the incremented version
+    ulda 1 ; get the most recent sum (and swap index to b)
+    st
+    
+    ulda 0   ; load the index again
+    addi 1   ; check if we are overflowing
+    jcu loop ; if not, repeat the loop
+
+exit:
+    mca F 0010 ; mark a result in ram to show we got here successfully
+    ulia F
+    lib F
+    st
