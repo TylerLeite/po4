@@ -21,10 +21,5 @@
 
 ## Operations
 A list of all supported operations available in ops.txt
-
-With the current compiler, almost all composite operations will mess with B. The naming convention is that if an op ends with "a" and doesn't start with "u", it will preserve B. Otherwise, B will change (although in a predictable way). The full list of composite operations which leave B unchanged is:
-- lia
-- lda
-- swa
-
-However, with two temporary registers and the new swr operation, B doesn't need to be volatile. But I haven't gone through and fixed it yet. Also there is a bug in sub() since neg() doesn't preserve B and then you try to use B in an operation. That will be fixed when the compiler switches to using swa and swb in composite functions.
+- All atomic operations preserve the state of B unless the explicit purpose is to modify B (e.g. ldb)
+- By default, composite operations are safe and will preserve the state of B. Unsafe versions are also provided. They expand into fewer operations and should be preferred if you don't care what's in B

@@ -23,54 +23,108 @@ def strip_comments(lines):
             new_lines.append(line)
     return new_lines
 
+# Some optimizations are easier with composite functions still un-expanded
+# e.g. replacing safe composite functions with unsafe versions when B will be loaded anyway
+def optimize_1(lines):
+    return lines #lol
+
 # Expand computed ops into atomics
 def expand_computed(lines):
     new_lines = []
     for line in lines:
         parts = line.split(" ")
         if parts[0] == "sub":
+            new_lines.append("swb")
+            new_lines.append("swp")
+            new_lines.append("neg")
+            new_lines.append("add")
+            new_lines.append("swb")
+        elif parts[0] == "usub":
             new_lines.append("swp")
             new_lines.append("neg")
             new_lines.append("add")
         elif parts[0] == "addi":
             new_lines.append("lib " + parts[1])
             new_lines.append("add")
-        elif parts[0] == "subi":
+        elif parts[0] == "uaddi":
             new_lines.append("lib " + parts[1])
-            new_lines.append("sub")
+            new_lines.append("add")
+        elif parts[0] == "subi":
+            new_lines.append("swb")
+            new_lines.append("lib " + parts[1])
+            new_lines.append("usub")
+            new_lines.append("swb")
+        elif parts[0] == "usubi":
+            new_lines.append("lib " + parts[1])
+            new_lines.append("usub")
         elif parts[0] == "neg":
             new_lines.append("not")
             new_lines.append("addi 1")
+        elif parts[0] == "uneg":
+            new_lines.append("unot")
+            new_lines.append("uaddi 1")
         elif parts[0] == "rsh":
+            new_lines.append("ror")
+            new_lines.append("swb")
+            new_lines.append("lib 7")
+            new_lines.append("and")
+            new_lines.append("swb")
+        elif parts[0] == "ursh":
             new_lines.append("ror")
             new_lines.append("lib 7")
             new_lines.append("and")
         elif parts[0] == "lsh":
             new_lines.append("rol")
-            new_lines.append("lib 14")
+            new_lines.append("swb")
+            new_lines.append("lib E")
+            new_lines.append("and")
+            new_lines.append("swb")
+        elif parts[0] == "ulsh":
+            new_lines.append("rol")
+            new_lines.append("lib E")
             new_lines.append("and")
         elif parts[0] == "not":
-            new_lines.append("lib 15")
+            new_lines.append("swb")
+            new_lines.append("lib F")
+            new_lines.append("xor")
+            new_lines.append("swb")
+        elif parts[0] == "unot":
+            new_lines.append("lib F")
             new_lines.append("xor")
         elif parts[0] == "andi":
+            new_lines.append("swb")
+            new_lines.append("lib " + parts[1])
+            new_lines.append("and")
+            new_lines.append("swb")
+        elif parts[0] == "uandi":
             new_lines.append("lib " + parts[1])
             new_lines.append("and")
         elif parts[0] == "ori":
+            new_lines.append("swb")
+            new_lines.append("lib " + parts[1])
+            new_lines.append("or")
+            new_lines.append("swb")
+        elif parts[0] == "uori":
             new_lines.append("lib " + parts[1])
             new_lines.append("or")
         elif parts[0] == "xori":
+            new_lines.append("swb")
+            new_lines.append("lib " + parts[1])
+            new_lines.append("xor")
+            new_lines.append("swb")
+        elif parts[0] == "uxori":
             new_lines.append("lib " + parts[1])
             new_lines.append("xor")
         elif parts[0] == "lia":
             new_lines.append("swp")
             new_lines.append("lib " + parts[1])
             new_lines.append("swp")
+        elif parts[0] == "ulia":
+            new_lines.append("lib " + parts[1])
+            new_lines.append("swp")
         elif parts[0] == "lda":
             new_lines.append("swp")
             new_lines.append("ldb " + parts[1])
-            new_lines.append("swp")
-        elif parts[0] == "ulia":
-            new_lines.append("lib " + parts[1])
             new_lines.append("swp")
         elif parts[0] == "ulda":
             new_lines.append("ldb " + parts[1])
@@ -92,6 +146,10 @@ def expand_computed(lines):
         else:
             new_lines.append(line)
     return new_lines
+
+# Optimize again, expanding prcess is dumb and sometimes produces redundant code
+def optimize_2(lines):
+    return lines #lol
 
 # Expand ptr ops, add placeholders for jumps
 def expand_large_ops(lines):
@@ -225,10 +283,12 @@ def my_hex(n):
 
 
 code = strip_comments(code)
+code = optimize_1(code)
 # maximum computed nesting is 3 (sub -> neg -> addi -> add), run expand 3 times
 code = expand_computed(code)
 code = expand_computed(code)
 code = expand_computed(code)
+code = optimize_2(code)
 
 with open(f"build/{program}.x.4sm", "w") as file:
     file.write("\n".join(code))

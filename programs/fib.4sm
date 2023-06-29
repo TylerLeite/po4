@@ -46,14 +46,14 @@ loop:
     swp   ; store fib[n-1] in ram[2] (as advertised)
     sta 2
 
-    ulda 0 ; get index
-    addi 1 ; increment it
-    sta 0  ; store the incremented version
-    ulda 1 ; get the most recent sum (and swap index to b)
+    ulda 0  ; get index
+    uaddi 1 ; increment it
+    sta 0   ; store the incremented version
+    ulda 1  ; get the most recent sum (and swap index to b)
     st
     
     ulda 0   ; load the index again
-    addi 1   ; check if we are overflowing
+    uaddi 1  ; check if we are overflowing
     jcu loop ; if not, repeat the loop
 
 exit:
