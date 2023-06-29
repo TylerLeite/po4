@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 )
@@ -27,8 +28,17 @@ func main() {
 	fmt.Println("Populating byte -> nyb map")
 	populateByte2Nyb()
 
-	fmt.Println("Loading binary program:")
-	file, _ := os.Open("./build/fib.bin")
+	var program string
+	flag.StringVar(&program, "load", "fib", "load this program from build/<arg>.bin")
+	flag.StringVar(&program, "l", "fib", "load this program from build/<arg>.bin")
+	flag.Parse()
+
+	filename := fmt.Sprintf("./build/%s.bin", program)
+	fmt.Printf("Loading binary program: %s\n", filename)
+	file, err := os.Open(filename)
+	if err != nil {
+		panic("Error loading file :(")
+	}
 	defer file.Close()
 
 	stats, _ := file.Stat()

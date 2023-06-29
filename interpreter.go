@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 type opName string
 
 const (
@@ -91,19 +89,6 @@ var (
 	nybArg     = byte2nyb[0]
 	ptrArg     = ptr(0)
 )
-
-func decode(i instr) string {
-	op := byte(i / 16)
-	arg := byte(i % 16)
-
-	opStr := opMap[op]
-
-	if tillNextOp == 0 {
-		return fmt.Sprintf("%s %x", opStr, arg)
-	} else {
-		return fmt.Sprintf("%x %x", op, arg)
-	}
-}
 
 func cycle() {
 	i := rom[pc]
