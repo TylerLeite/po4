@@ -10,7 +10,7 @@ import (
 var (
 	ram [2048]nyb
 	// vram        [2048]nyb
-	rom         [49152 * 2]instr
+	rom         [49152]instr
 	cache       [16]ptr
 	cacheOffset ptr
 
