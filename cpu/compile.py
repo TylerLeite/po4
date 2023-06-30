@@ -80,8 +80,10 @@ def expand_computed(lines):
             new_lines.append("neg")
             new_lines.append("add")
         elif parts[0] == "addi":
+            new_lines.append("swb")
             new_lines.append("lib " + parts[1])
             new_lines.append("add")
+            new_lines.append("swb")
         elif parts[0] == "uaddi":
             new_lines.append("lib " + parts[1])
             new_lines.append("add")

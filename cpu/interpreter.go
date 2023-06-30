@@ -1,4 +1,4 @@
-package main
+package cpu
 
 type opName string
 
@@ -22,7 +22,7 @@ const (
 	opSwapRegisters   opName = "swr"
 )
 
-func runInstruction(instr opName, arg1 nyb, arg2 ptr) {
+func runInstruction(instr opName, arg1 Nyb, arg2 Ptr) {
 	switch instr {
 	case opAdd:
 		add()
@@ -51,7 +51,7 @@ func runInstruction(instr opName, arg1 nyb, arg2 ptr) {
 	case opStoreA:
 		sta(arg1)
 	case opMemoryCacheAdd:
-		mca(arg1, ptr(arg2))
+		mca(arg1, Ptr(arg2))
 	case opLoadCacheOffset:
 		mri()
 	case opSwapRegisters:
@@ -86,18 +86,18 @@ var opMap = [16]opName{
 var (
 	tillNextOp = 0
 	opStr      = opUndef
-	nybArg     = byte2nyb[0]
-	ptrArg     = ptr(0)
+	nybArg     = Byte2Nyb[0]
+	ptrArg     = Ptr(0)
 )
 
 func cycle() {
-	i := rom[pc]
+	i := ROM[pc]
 	op := byte(i / 16)
 	arg := byte(i % 16)
 
 	if tillNextOp == 0 {
 		opStr = opMap[op]
-		nybArg = byte2nyb[arg]
+		nybArg = Byte2Nyb[arg]
 
 		if opStr == "jcu" || opStr == "mca" || opStr == "mri" {
 			tillNextOp = 2
@@ -109,11 +109,11 @@ func cycle() {
 	} else {
 		if tillNextOp == 2 {
 			tillNextOp -= 1
-			ptrArg = ptr(16 * i)
+			ptrArg = Ptr(16 * i)
 			pc += 1
 		} else if tillNextOp == 1 {
 			tillNextOp -= 1
-			ptrArg += ptr(i)
+			ptrArg += Ptr(i)
 			runInstruction(opStr, nybArg, ptrArg)
 		}
 	}

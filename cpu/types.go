@@ -1,17 +1,17 @@
-package main
+package cpu
 
-type ptr int16
-type instr uint8
-type nyb [4]bool
+type Ptr int16
+type Instr uint8
+type Nyb [4]bool
 
-func (n *nyb) set(to nyb) {
+func (n *Nyb) Set(to Nyb) {
 	n[0] = to[0]
 	n[1] = to[1]
 	n[2] = to[2]
 	n[3] = to[3]
 }
 
-var nyb2byte = map[nyb]byte{
+var Nyb2Byte = map[Nyb]byte{
 	{false, false, false, false}: 0,
 	{false, false, false, true}:  1,
 	{false, false, true, false}:  2,
@@ -30,7 +30,7 @@ var nyb2byte = map[nyb]byte{
 	{true, true, true, true}:     15,
 }
 
-var byte2nyb = map[byte]nyb{
+var Byte2Nyb = map[byte]Nyb{
 	0:  {false, false, false, false},
 	1:  {false, false, false, true},
 	2:  {false, false, true, false},
@@ -47,10 +47,4 @@ var byte2nyb = map[byte]nyb{
 	13: {true, true, false, true},
 	14: {true, true, true, false},
 	15: {true, true, true, true},
-}
-
-func populateByte2Nyb() {
-	for i := byte(16); i > 0; i += 1 {
-		byte2nyb[i] = byte2nyb[i%16]
-	}
 }
