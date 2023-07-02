@@ -1,81 +1,81 @@
 package cpu
 
 func add() {
-	sum := Nyb2Byte[a] + Nyb2Byte[b]
-	if carry {
+	sum := Nyb2Byte[A] + Nyb2Byte[B]
+	if Carry {
 		sum += 1
 	}
 
 	if sum >= 16 {
-		carry = true
+		Carry = true
 	} else {
-		carry = false
+		Carry = false
 	}
 
-	(&a).Set(Byte2Nyb[sum])
+	(&A).Set(Byte2Nyb[sum])
 }
 
-func ror() {
-	(&t0).Set(a)
-	a[0] = t0[1]
-	a[1] = t0[2]
-	a[2] = t0[3]
-	a[3] = t0[0]
+func mod() {
+	rem := Nyb2Byte[A] % Nyb2Byte[B]
+	(&A).Set(Byte2Nyb[rem])
 }
 
 func rol() {
-	(&t0).Set(a)
-	a[0] = t0[3]
-	a[1] = t0[0]
-	a[2] = t0[1]
-	a[3] = t0[2]
+	(&T0).Set(A)
+	A[0] = T0[3]
+	A[1] = T0[0]
+	A[2] = T0[1]
+	A[3] = T0[2]
 }
 
 func jcu(line Ptr) {
-	if !carry {
-		pc = line
+	if !Carry {
+		ProgramCounter = line
 	}
 }
 
+func fnc(line Ptr) {
+	CallStack = append(CallStack, ProgramCounter)
+	ProgramCounter = line
+}
+
+func ret() {
+	i := len(CallStack) - 1
+	ProgramCounter = CallStack[i]
+	CallStack = CallStack[:i]
+}
+
 func and() {
-	a[0] = a[0] && b[0]
-	a[1] = a[1] && b[1]
-	a[2] = a[2] && b[2]
-	a[3] = a[3] && b[3]
+	A[0] = A[0] && B[0]
+	A[1] = A[1] && B[1]
+	A[2] = A[2] && B[2]
+	A[3] = A[3] && B[3]
 }
 
 func or() {
-	a[0] = a[0] || b[0]
-	a[1] = a[1] || b[1]
-	a[2] = a[2] || b[2]
-	a[3] = a[3] || b[3]
+	A[0] = A[0] || B[0]
+	A[1] = A[1] || B[1]
+	A[2] = A[2] || B[2]
+	A[3] = A[3] || B[3]
 }
 
 func xor() {
-	a[0] = a[0] != b[0]
-	a[1] = a[1] != b[1]
-	a[2] = a[2] != b[2]
-	a[3] = a[3] != b[3]
+	A[0] = A[0] != B[0]
+	A[1] = A[1] != B[1]
+	A[2] = A[2] != B[2]
+	A[3] = A[3] != B[3]
 }
 
 func lib(n Nyb) {
-	(&b).Set(n)
+	(&B).Set(n)
 }
 
-func ld() {
-	(&a).Set(RAM[MemCache[Nyb2Byte[b]]])
-}
-
-func ldb(ref Nyb) {
-	(&b).Set(RAM[MemCache[Nyb2Byte[ref]]])
+func rlb() {
+	(&B).Set(RAM[MemCache[Nyb2Byte[B]]])
 }
 
 func st() {
-	(&RAM[MemCache[Nyb2Byte[b]]]).Set(a)
-}
-
-func sta(ref Nyb) {
-	(&RAM[MemCache[Nyb2Byte[ref]]]).Set(a)
+	(&RAM[MemCache[Nyb2Byte[B]]]).Set(A)
 }
 
 func swr(n Nyb) {
@@ -96,23 +96,23 @@ func swr(n Nyb) {
 	}
 
 	if sum == 1 {
-		(&t1).Set(a)
-		(&a).Set(b)
-		(&b).Set(t1)
+		(&T1).Set(A)
+		(&A).Set(B)
+		(&B).Set(T1)
 	} else if sum == 2 {
-		(&t1).Set(a)
-		(&a).Set(t0)
-		(&t0).Set(t1)
+		(&T1).Set(A)
+		(&A).Set(T0)
+		(&T0).Set(T1)
 	} else if sum == 3 {
-		(&t1).Set(b)
-		(&b).Set(t1)
-		(&t0).Set(t1)
+		(&T1).Set(B)
+		(&B).Set(T0)
+		(&T0).Set(T1)
 	}
 	// TODO: more input modes?
 }
 
 func lc() {
-	carry = b[3]
+	Carry = B[3]
 }
 
 func mca(index Nyb, addr Ptr) {
@@ -120,7 +120,7 @@ func mca(index Nyb, addr Ptr) {
 }
 
 func mri() {
-	offset := 8 - int(Nyb2Byte[b])
+	offset := 8 - int(Nyb2Byte[B])
 	for i, addr := range MemCache {
 		MemCache[i] = Ptr(int(addr) - offset)
 	}

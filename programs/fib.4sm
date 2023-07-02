@@ -27,17 +27,17 @@ init:
     ; first 2 numbers in the sequence are 1 and 1
     ulia 1
 
-    lib 2 ; store 1 @ cache address 2
+    lib 1 ; store 1 @ cache address 2
     st
-    lib 3 ; store 1 @ cache address 3
+    lib 2 ; store 1 @ cache address 3
     st
 
     swp ; loop index is the memory cache address last used (3 in this case)
     lib 0
     st
 
-    ; now ram looks like [0, 1, 1, ...]
-    ; a=3, b=0
+    ; now ram looks like [2, 1, 1, ...]
+    ; a=2, b=0
 
 loop:
     ; first get args from ram
@@ -46,7 +46,7 @@ loop:
     ldb 2
 
     add   ; calculate next fib # in $a
-    clc   ; need to clear the carry manually
+    uclc  ; need to clear the carry manually
     ldb 1 ; save fib [n-1], going to move it to ram[2]
     sta 1 ; store sum in ram[1]
     swp   ; store fib[n-1] in ram[2] (as advertised)

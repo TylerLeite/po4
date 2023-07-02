@@ -1,16 +1,16 @@
 // Atomic operations
 add()     // A = A + B
-ror()     // bit-rotate A right
+mod()     // A = A % B
 rol()     // bit-rotate A left
 jcu(line) // jump to line if the carry bit is unset
+fnc(line) // push current pc to call stack and jump to line
+ret()     // pop from call stack and jump to that line
 and()     // A = A & B
 or()      // A + A | B
 xor()     // A + A ^ B
 lib(n)    // B = n
-ld()      // A = *B
-ldb(ref)  // B = *ref
+rlb()     // B = *B
 st()      // *B = A
-sta(ref)  // *ref = A
 swr(n)    // n[:2], n[2:] = n[2:], n[:2]
 lc()      // carry = b
 
@@ -21,15 +21,22 @@ mri()            // increment where each cache entry points to by (B-7)
 sub()     // A = A - B
 addi(n)   // A = A + n
 subi(n)   // A = A - n
+modi(n)   // A = A mod n
 neg()     // A = -A
+ror()     // bit-rotate A right
 rsh()     // A = A >> 1
 lsh()     // A = A << 1
 not()     // A = !A
 andi(n)   // A = A & n
 ori(n)    // A = A | n
 xori(n)   // A = A ^ n
+cba()     // A = B
+cab()     // B = A
+ld()      // A = *B
+ldb(ref)  // B = *ref
 lia(n)    // A = n
 lda(ref)  // A = *ref
+sta(ref)  // *ref = A
 clr()     // A = 0, B = 0
 clc()     // unset the carry bit
 stc()     // set the carry bit
@@ -41,15 +48,19 @@ swb()     // B = T, T = B
 usub()    // A = A - B
 uaddi(n)  // A = A + n
 usubi(n)  // A = A - n
+umodi(n)  // A = A mod n
 uneg()    // A = -A
 ursh()    // A = A >> 1
 ulsh()    // A = A << 1
-unot()     // A = !A
-uandi(n)   // A = A & n
-uori(n)    // A = A | n
-uxori(n)   // A = A ^ n
+unot()    // A = !A
+uandi(n)  // A = A & n
+uori(n)   // A = A | n
+uxori(n)  // A = A ^ n
 ulia(n)   // A = n
 ulda(ref) // A = *ref
+usta()    // *ref = A
+uclc()    // unset the carry bit
+ustc()    // set the carry bit
 
 // Unimplemented functions
 mul()   // A = A * B

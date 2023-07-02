@@ -81,20 +81,25 @@ def expand_computed(lines):
             new_lines.append("add")
         elif parts[0] == "addi":
             new_lines.append("swb")
-            new_lines.append("lib " + parts[1])
-            new_lines.append("add")
+            new_lines.append("uaddi")
             new_lines.append("swb")
         elif parts[0] == "uaddi":
             new_lines.append("lib " + parts[1])
             new_lines.append("add")
         elif parts[0] == "subi":
             new_lines.append("swb")
-            new_lines.append("lib " + parts[1])
-            new_lines.append("usub")
+            new_lines.append("usubi")
             new_lines.append("swb")
         elif parts[0] == "usubi":
             new_lines.append("lib " + parts[1])
             new_lines.append("usub")
+        elif parts[0] == "modi":
+            new_lines.append("swb")
+            new_lines.append("umodi")
+            new_lines.append("swb")
+        elif parts[0] == "umodi":
+            new_lines.append("lib " + parts[1])
+            new_lines.append("mod")
         elif parts[0] == "neg":
             new_lines.append("not")
             new_lines.append("addi 1")
@@ -123,36 +128,47 @@ def expand_computed(lines):
             new_lines.append("and")
         elif parts[0] == "not":
             new_lines.append("swb")
-            new_lines.append("lib F")
-            new_lines.append("xor")
+            new_lines.append("unot")
             new_lines.append("swb")
         elif parts[0] == "unot":
             new_lines.append("lib F")
             new_lines.append("xor")
         elif parts[0] == "andi":
             new_lines.append("swb")
-            new_lines.append("lib " + parts[1])
-            new_lines.append("and")
+            new_lines.append("uandi")
             new_lines.append("swb")
         elif parts[0] == "uandi":
             new_lines.append("lib " + parts[1])
             new_lines.append("and")
         elif parts[0] == "ori":
             new_lines.append("swb")
-            new_lines.append("lib " + parts[1])
-            new_lines.append("or")
+            new_lines.append("uori")
             new_lines.append("swb")
         elif parts[0] == "uori":
             new_lines.append("lib " + parts[1])
             new_lines.append("or")
         elif parts[0] == "xori":
             new_lines.append("swb")
-            new_lines.append("lib " + parts[1])
-            new_lines.append("xor")
+            new_lines.append("uxori")
             new_lines.append("swb")
         elif parts[0] == "uxori":
             new_lines.append("lib " + parts[1])
             new_lines.append("xor")
+        elif parts[0] == "cba":
+            new_lines.append("lia 0")
+            new_lines.append("add")
+        elif parts[0] == "cab":
+            new_lines.append("lib 0")
+            new_lines.append("swp")
+            new_lines.append("add")
+        elif parts[0] == "ld":
+            new_lines.append("cba")
+            new_lines.append("lib " + parts[1])
+            new_lines.append("rlb")
+            new_lines.append("swp")
+        elif parts[0] == "ldb":
+            new_lines.append("lib " + parts[1])
+            new_lines.append("rlb")
         elif parts[0] == "lia":
             new_lines.append("swp")
             new_lines.append("lib " + parts[1])
@@ -170,9 +186,17 @@ def expand_computed(lines):
         elif parts[0] == "clr":
             new_lines.append("andi 0")
         elif parts[0] == "clc":
+            new_lines.append("swb")
+            new_lines.append("uclc")
+            new_lines.append("swb")
+        elif parts[0] == "uclc":
             new_lines.append("lib 0")
             new_lines.append("lc")
         elif parts[0] == "stc":
+            new_lines.append("swb")
+            new_lines.append("ustc")
+            new_lines.append("swb")
+        elif parts[0] == "ustc":
             new_lines.append("lib 1")
             new_lines.append("lc")
         elif parts[0] == "swp":
@@ -181,6 +205,17 @@ def expand_computed(lines):
             new_lines.append("swr 2")
         elif parts[0] == "swb":
             new_lines.append("swr 3")
+        elif parts[0] == "sta":
+            new_lines.append("swb")
+            new_lines.append("usta " + parts[1])
+            new_lines.append("swb")
+        elif parts[0] == "usta":
+            new_lines.append("lib " + parts[1])
+            new_lines.append("st")
+        elif parts[0] == "ror":
+            new_lines.append("rol")
+            new_lines.append("rol")
+            new_lines.append("rol")
         else:
             new_lines.append(line)
     return new_lines
@@ -253,17 +288,17 @@ def expand_jumps(lines):
 def convert_to_hex(lines):
     opMap = {
         "add": "0",
-        "ror": "1",
+        "mod": "1",
         "rol": "2",
         "jcu": "3",
-        "and": "4",
-        "or": "5",
-        "xor": "6",
-        "lib": "7",
-        "ld": "8",
-        "ldb": "9",
-        "st": "A",
-        "sta": "B",
+        "fnc": "4",
+        "ret": "5",
+        "and": "6",
+        "or": "7",
+        "xor": "8",
+        "lib": "9",
+        "rlb": "A",
+        "st": "B",
         "swr": "C",
         "lc": "D",
         "mca": "E",
@@ -322,7 +357,8 @@ def my_hex(n):
 code = strip_comments(code)
 code = replace_constants(code)
 code = optimize_1(code)
-# maximum computed nesting is 3 (sub -> neg -> addi -> add), run expand 3 times
+# maximum computed nesting is 3 (sub -> neg -> addi -> uaddi -> add), run expand 3 times
+code = expand_computed(code)
 code = expand_computed(code)
 code = expand_computed(code)
 code = expand_computed(code)

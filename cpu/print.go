@@ -27,7 +27,7 @@ func PrintROM(from, to int) {
 }
 
 func PrintRegisters() {
-	fmt.Printf("A: %x, B: %x | T: %x\n", Nyb2Byte[a], Nyb2Byte[b], Nyb2Byte[t0])
+	fmt.Printf("A: %x, B: %x | T: %x, %x\n", Nyb2Byte[A], Nyb2Byte[B], Nyb2Byte[T0], Nyb2Byte[T1])
 }
 
 func PrintMemCache() {

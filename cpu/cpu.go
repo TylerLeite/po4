@@ -7,19 +7,19 @@ import (
 )
 
 var (
-	RAM [2048]Nyb
-	// vram        [2048]nyb
-	ROM      [49152]Instr
-	MemCache [16]Ptr
+	RAM       [2048]Nyb
+	ROM       [49152]Instr
+	MemCache  [16]Ptr
+	CallStack = make([]Ptr, 0)
 
 	// Registers
-	a  Nyb
-	b  Nyb
-	t0 Nyb // tmp 1
-	t1 Nyb // tmp 2
+	A  Nyb
+	B  Nyb
+	T0 Nyb // tmp 1
+	T1 Nyb // tmp 2
 
-	carry bool
-	pc    Ptr
+	Carry          bool
+	ProgramCounter Ptr
 )
 
 func PowerOn() {
@@ -56,7 +56,7 @@ func Load(filename string) int {
 func Run(programSize int) {
 	fmt.Printf("Running program from ROM (%d bytes)...\n", programSize)
 
-	for int(pc) < programSize {
+	for int(ProgramCounter) < programSize {
 		// TODO: debug mode, pause at breakpoints, allow line-by-line stepping
 		cycle()
 	}
@@ -67,5 +67,5 @@ func PowerOff() {
 	PrintRegisters()
 	PrintMemCache()
 	PrintRAM(0, 2048, 64)
-	fmt.Printf("PC: %d\nCarry: %v\n", pc, carry)
+	fmt.Printf("PC: %d\nCarry: %v\n", ProgramCounter, Carry)
 }
