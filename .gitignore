@@ -1,5 +1,6 @@
 *.4bc
 *.x.4sm
+*.l.4sm
 
 po4
 compile

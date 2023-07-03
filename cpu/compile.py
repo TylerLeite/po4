@@ -233,6 +233,10 @@ def expand_large_ops(lines):
             new_lines.append(line)
             new_lines.append("?")
             new_lines.append("?")
+        elif parts[0] == "fnc":
+            new_lines.append(line)
+            new_lines.append("?")
+            new_lines.append("?")
         elif parts[0] == "mca":
             new_lines.append("mca " + parts[1])
             l2, l3 = ptr_to_2_nybs(int(parts[2], 16))
@@ -251,15 +255,13 @@ def expand_large_ops(lines):
 def expand_labels(lines):
     # build label-to-line map
     def get_labels(lines):
-        i = 0
         labels = {}
         new_lines = []
         for line in lines:
             # NOTE: two labels in consecutive lines will mess everything up
             if ":" in line:
-                labels[line[:-1]] = my_hex(i)
+                labels[line[:-1]] = my_hex(len(new_lines))
             else:
-                i += 1
                 new_lines.append(line)
         return labels, new_lines
     
@@ -280,6 +282,11 @@ def expand_jumps(lines):
         if parts[0] == "jcu":
             l2, l3 = ptr_to_2_nybs(int(parts[1], 16))
             lines[i] = "jcu"
+            lines[i+1] = l2
+            lines[i+2] = l3
+        elif parts[0] == "fnc":
+            l2, l3 = ptr_to_2_nybs(int(parts[1], 16))
+            lines[i] = "fnc"
             lines[i+1] = l2
             lines[i+2] = l3
     return lines
@@ -364,12 +371,16 @@ code = expand_computed(code)
 code = expand_computed(code)
 code = optimize_2(code)
 
-with open(f"build/{program}.x.4sm", "w") as file:
+with open(f"build/{program}.l.4sm", "w") as file:
     file.write("\n".join(code))
 
 code = expand_large_ops(code)
 code = expand_labels(code)
 expand_jumps(code)
+
+with open(f"build/{program}.x.4sm", "w") as file:
+    file.write("\n".join(code))
+
 code = convert_to_hex(code)
 
 with open(f"build/{program}.4bc", "w") as file:

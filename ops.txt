@@ -65,8 +65,6 @@ ustc()    // set the carry bit
 // Unimplemented functions
 mul()   // A = A * B
 div()   // A = A / B
-mod()   // A = A % B
 muli(n) // A = A * n
 divi(n) // A = A / n
-modi(n) // A = A % n
 sti(n)  // *B = n

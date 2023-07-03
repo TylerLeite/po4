@@ -45,22 +45,36 @@ loop:
     swp
     ldb 2
 
+    fnc calc_next  ; calculate the next fib number
+    fnc inc_index  ; increment the loop index
+    fnc store_next ; store previously calculated fib number in the incremented index position
+    
+    ulda 0   ; load the index again
+    uaddi 1  ; check if we are overflowing
+    jcu loop ; if not, repeat the loop
+
+    clc      ; overflowing = program done running
+    jcu exit ; jump over the functions to get to exit
+
+calc_next:
     add   ; calculate next fib # in $a
     uclc  ; need to clear the carry manually
     ldb 1 ; save fib [n-1], going to move it to ram[2]
     sta 1 ; store sum in ram[1]
     swp   ; store fib[n-1] in ram[2] (as advertised)
     sta 2
+    ret
 
+inc_index:
     ulda 0  ; get index
     uaddi 1 ; increment it
     sta 0   ; store the incremented version
-    ulda 1  ; get the most recent sum (and swap index to b)
+    ret
+
+store_next:
+    ulda 1 ; get the most recent sum (and swap index to b)
     st
-    
-    ulda 0   ; load the index again
-    uaddi 1  ; check if we are overflowing
-    jcu loop ; if not, repeat the loop
+    ret
 
 exit:
     mca F $output_end ; mark a result in ram to show we got here successfully

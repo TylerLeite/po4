@@ -1,5 +1,7 @@
 package cpu
 
+import "fmt"
+
 func add() {
 	sum := Nyb2Byte[A] + Nyb2Byte[B]
 	if Carry {
@@ -40,6 +42,9 @@ func fnc(line Ptr) {
 }
 
 func ret() {
+	if len(CallStack) == 0 {
+		panic(fmt.Sprintf("Returned with an empty call stack! PC: %x", ProgramCounter))
+	}
 	i := len(CallStack) - 1
 	ProgramCounter = CallStack[i]
 	CallStack = CallStack[:i]

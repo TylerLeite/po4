@@ -54,3 +54,18 @@ func PrintInstruction(i Instr) string {
 		return fmt.Sprintf("%x %x", op, arg)
 	}
 }
+
+func PrintCallStack() {
+	if len(CallStack) == 0 {
+		fmt.Println("<empty call stack>")
+		return
+	}
+
+	out := "Call stack: "
+
+	for _, ptr := range CallStack {
+		out += fmt.Sprintf("%d > ", ptr)
+	}
+	out = out[:len(out)-4]
+	fmt.Println(out)
+}

@@ -1,7 +1,5 @@
 package cpu
 
-import "fmt"
-
 type opName string
 
 const (
@@ -60,9 +58,10 @@ func runInstruction(instr opName, arg1 Nyb, arg2 Ptr) {
 		swr(arg1)
 	}
 
-	PrintMemCache()
-	PrintRegisters()
-	PrintRAM(0, 16, 8)
+	// PrintCallStack()
+	// PrintMemCache()
+	// PrintRegisters()
+	// PrintRAM(0, 16, 8)
 
 	// inc the program counter after every instruction, unless the program just jumped
 	if instr != opFunctionCall && (Carry || instr != opJump) {
@@ -101,7 +100,7 @@ func cycle() {
 	op := byte(i / 16)
 	arg := byte(i % 16)
 
-	fmt.Println(PrintInstruction(i))
+	// fmt.Println(PrintInstruction(i))
 
 	if tillNextOp == 0 {
 		opStr = opMap[op]
